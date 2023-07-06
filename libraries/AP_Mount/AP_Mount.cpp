@@ -13,6 +13,7 @@
 #include "AP_Mount_Gremsy.h"
 #include "AP_Mount_Siyi.h"
 #include "AP_Mount_Scripting.h"
+#include "AP_Mount_Xacti.h"
 #include <stdio.h>
 #include <AP_Math/location.h>
 #include <SRV_Channel/SRV_Channel.h>
@@ -131,6 +132,14 @@ void AP_Mount::init()
             _num_instances++;
             break;
 #endif // HAL_MOUNT_SCRIPTING_ENABLED
+
+#if HAL_MOUNT_XACTI_ENABLED
+        // check for Xacti gimbal
+        case Type::Xacti:
+            _backends[instance] = new AP_Mount_Xacti(*this, _params[instance], instance);
+            _num_instances++;
+            break;
+#endif // HAL_MOUNT_XACTI_ENABLED
         }
 
         // init new instance
@@ -733,13 +742,35 @@ bool AP_Mount::set_zoom(uint8_t instance, ZoomType zoom_type, float zoom_value)
 
 // set focus specified as rate, percentage or auto
 // focus in = -1, focus hold = 0, focus out = 1
-bool AP_Mount::set_focus(uint8_t instance, FocusType focus_type, float focus_value)
+SetFocusResult AP_Mount::set_focus(uint8_t instance, FocusType focus_type, float focus_value)
 {
     auto *backend = get_instance(instance);
     if (backend == nullptr) {
-        return false;
+        return SetFocusResult::FAILED;
     }
     return backend->set_focus(focus_type, focus_value);
+}
+
+// send camera information message to GCS
+void AP_Mount::send_camera_information(mavlink_channel_t chan) const
+{
+    // call send_camera_information for each instance
+    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+        if (_backends[instance] != nullptr) {
+            _backends[instance]->send_camera_information(chan);
+        }
+    }
+}
+
+// send camera settings message to GCS
+void AP_Mount::send_camera_settings(mavlink_channel_t chan) const
+{
+    // call send_camera_settings for each instance
+    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+        if (_backends[instance] != nullptr) {
+            _backends[instance]->send_camera_settings(chan);
+        }
+    }
 }
 
 AP_Mount_Backend *AP_Mount::get_primary() const
@@ -851,7 +882,8 @@ void AP_Mount::convert_params()
         IGNORE_RETURN(AP_Param::get_param_by_index(this, 5, AP_PARAM_INT8, &stab_pitch));
         if (mnt_type == 1 && stab_roll == 0 && stab_pitch == 0)  {
             // Servo type without stabilization is changed to BrushlessPWM
-            mnt_type = (int8_t)Type::BrushlessPWM;
+            // conversion is still done even if HAL_MOUNT_SERVO_ENABLED is false
+            mnt_type = 7;  // (int8_t)Type::BrushlessPWM;
         }
     }
     _params[0].type.set_and_save(mnt_type);
