@@ -24,11 +24,11 @@ def IsArrive( Target, Now, Margin ):
         Arrive = False
     return Arrive
 
+
 ##### body
 
 vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True, timeout=60 )
 print("Connected.")
-
 
 # # ホームロケーション
 # # vehicle.home_location に値がセットされるまで download を繰り返す
@@ -67,102 +67,40 @@ try:
 except TimeoutError as takeoffError:
     print("Takeoff is timeout.")
 
-# 目標の緯度経度、高度設定
-HomeLocation = vehicle.home_location
-print("Home : %s" % HomeLocation )
+# 正五角形
+#        x(E)     y(N)
+# p1     1.0      0.0
+# p2     0.31     0.95
+# p3    -0.81     0.59
+# p4    -0.81    -0.59
+# p5     0.31    -0.95
+
+posN = [ 0.0, 0.59, -0.95, 0.95, -0.59, 0.0 ]
+posE = [ 1.0, -0.81, 0.31, 0.31, -0.81, 1.0 ]
+posD = -10.0
+posMag = 10.0
 
 TargetMargin = 0.2      # 移動完了判断のマージン
 MoveTimeout = 30        # 移動完了までのタイムアウト時間(s)
 
-# step1.North へ 10m
-print("step1 start")
-TargetNorth =  10.0
-TargetEast  =   0.0
-TargetDown  = -10.0
-msg = BuildSetPositionMessage( TargetNorth, TargetEast, TargetDown )
+print("start.")
+for posN, posE in zip( posN, posE ):
+    targetPosN = posN * posMag
+    targetPosE = posE * posMag
 
-for x in range( 0, MoveTimeout ):
-    ArriveNorth = IsArrive( TargetNorth, vehicle.location.local_frame.north, TargetMargin )
-    ArriveEast  = IsArrive( TargetEast,  vehicle.location.local_frame.east,  TargetMargin )
-    if ArriveNorth and ArriveEast:
-        break
+    msg = BuildSetPositionMessage( targetPosN, targetPosE, posD )
+    for x in range( 0, MoveTimeout ):
+        currentPos  = vehicle.location.local_frame
+        ArriveNorth = IsArrive( targetPosN, currentPos.north, TargetMargin )
+        ArriveEast  = IsArrive( targetPosE, currentPos.east,  TargetMargin )
+        if ArriveNorth and ArriveEast:
+            break
 
-    vehicle.send_mavlink(msg)
-    time.sleep(1)
+        vehicle.send_mavlink( msg )
+        time.sleep( 1 )
 
-print("step1 done. %s, %s" % ( vehicle.location.local_frame.north, vehicle.location.local_frame.east ) )
-
-# step2.East へ 10m
-print("step2 start")
-TargetNorth =   0.0
-TargetEast  =  10.0
-TargetDown  = -10.0
-msg = BuildSetPositionMessage( TargetNorth, TargetEast, TargetDown )
-
-for x in range( 0, MoveTimeout ):
-    ArriveNorth = IsArrive( TargetNorth, vehicle.location.local_frame.north, TargetMargin )
-    ArriveEast  = IsArrive( TargetEast,  vehicle.location.local_frame.east,  TargetMargin )
-    if ArriveNorth and ArriveEast:
-        break
-
-    vehicle.send_mavlink(msg)
-    time.sleep(1)
-
-print("step2 done. %s, %s" % ( vehicle.location.local_frame.north, vehicle.location.local_frame.east ) )
-
-# step3.Southへ10m
-print("step3 start")
-TargetNorth = -10.0
-TargetEast  =   0.0
-TargetDown  = -10.0
-msg = BuildSetPositionMessage( TargetNorth, TargetEast, TargetDown )
-
-for x in range( 0, MoveTimeout ):
-    ArriveNorth = IsArrive( TargetNorth, vehicle.location.local_frame.north, TargetMargin )
-    ArriveEast  = IsArrive( TargetEast,  vehicle.location.local_frame.east,  TargetMargin )
-    if ArriveNorth and ArriveEast:
-        break
-
-    vehicle.send_mavlink(msg)
-    time.sleep(1)
-
-print("step3 done. %s, %s" % ( vehicle.location.local_frame.north, vehicle.location.local_frame.east ) )
-
-# step4.westへ10m
-print("step4 start")
-TargetNorth =   0.0
-TargetEast  = -10.0
-TargetDown  = -10.0
-msg = BuildSetPositionMessage( TargetNorth, TargetEast, TargetDown )
-
-for x in range( 0, MoveTimeout ):
-    ArriveNorth = IsArrive( TargetNorth, vehicle.location.local_frame.north, TargetMargin )
-    ArriveEast  = IsArrive( TargetEast,  vehicle.location.local_frame.east,  TargetMargin )
-    if ArriveNorth and ArriveEast:
-        break
-
-    vehicle.send_mavlink(msg)
-    time.sleep(1)
-
-print("step4 done. %s, %s" % ( vehicle.location.local_frame.north, vehicle.location.local_frame.east ) )
-
-# step5.North へ 10m
-print("step5 start")
-TargetNorth =  10.0
-TargetEast  =   0.0
-TargetDown  = -10.0
-msg = BuildSetPositionMessage( TargetNorth, TargetEast, TargetDown )
-
-for x in range( 0, MoveTimeout ):
-    ArriveNorth = IsArrive( TargetNorth, vehicle.location.local_frame.north, TargetMargin )
-    ArriveEast  = IsArrive( TargetEast,  vehicle.location.local_frame.east,  TargetMargin )
-    if ArriveNorth and ArriveEast:
-        break
-
-    vehicle.send_mavlink(msg)
-    time.sleep(1)
-
-print("step5 done. %s, %s" % ( vehicle.location.local_frame.north, vehicle.location.local_frame.east ) )
+print("done.")
+time.sleep( 5 )
 
 # RTL
 vehicle.mode = VehicleMode("RTL")
