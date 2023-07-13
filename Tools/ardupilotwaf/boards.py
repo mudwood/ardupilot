@@ -47,24 +47,30 @@ class Board:
         env.SRCROOT = srcpath('')
         self.configure_env(cfg, env)
 
-        # Setup scripting:
         env.DEFINES.update(
-            LUA_32BITS = 1,
+            AP_SCRIPTING_ENABLED = 0,
         )
 
-        env.AP_LIBRARIES += [
-            'AP_Scripting',
-            'AP_Scripting/lua/src',
-        ]
+        # Setup scripting, had to defer this to allow checking board size
+        if (cfg.options.enable_scripting or
+            ((not cfg.options.disable_scripting) and
+            (not cfg.env.DISABLE_SCRIPTING) and
+            ((cfg.env.BOARD_FLASH_SIZE is None) or
+             (cfg.env.BOARD_FLASH_SIZE == []) or
+             (cfg.env.BOARD_FLASH_SIZE > 1024)))):
 
-        if cfg.options.enable_scripting:
             env.DEFINES.update(
                 AP_SCRIPTING_ENABLED = 1,
-            )
-        elif cfg.options.disable_scripting:
-            env.DEFINES.update(
-                AP_SCRIPTING_ENABLED = 0,
-            )
+                LUA_32BITS = 1,
+                )
+
+            env.AP_LIBRARIES += [
+                'AP_Scripting',
+                'AP_Scripting/lua/src',
+                ]
+
+        else:
+            cfg.options.disable_scripting = True
 
         # allow GCS disable for AP_DAL example
         if cfg.options.no_gcs:
@@ -441,7 +447,6 @@ class Board:
                 DRONECAN_CXX_WRAPPERS = 1,
                 USE_USER_HELPERS = 1,
                 CANARD_ENABLE_DEADLINE = 1,
-                CANARD_ALLOCATE_SEM=1
             )
 
 
@@ -770,25 +775,6 @@ class sitl(Board):
                 '-m32',
             ]
 
-        # whitelist of compilers which we should build with -Werror
-        gcc_whitelist = frozenset([
-                ('11','3','0'),
-            ])
-
-        werr_enabled_default = bool('g++' == cfg.env.COMPILER_CXX and cfg.env.CC_VERSION in gcc_whitelist)
-
-        if werr_enabled_default or cfg.options.Werror:
-            if not cfg.options.disable_Werror:
-                cfg.msg("Enabling -Werror", "yes")
-                if '-Werror' not in env.CXXFLAGS:
-                    env.CXXFLAGS += [ '-Werror' ]
-            else:
-                cfg.msg("Enabling -Werror", "no")
-                if '-Werror' in env.CXXFLAGS:
-                    env.CXXFLAGS.remove('-Werror')
-        else:
-            cfg.msg("Enabling -Werror", "yes")
-        
     def get_name(self):
         return self.__class__.__name__
 
@@ -796,6 +782,7 @@ class sitl(Board):
 class sitl_periph_gps(sitl):
     def configure_env(self, cfg, env):
         cfg.env.AP_PERIPH = 1
+        cfg.env.DISABLE_SCRIPTING = 1
         super(sitl_periph_gps, self).configure_env(cfg, env)
         env.DEFINES.update(
             HAL_BUILD_AP_PERIPH = 1,
@@ -826,9 +813,6 @@ class sitl_periph_gps(sitl):
             AP_STATS_ENABLED = 0,
             HAL_SUPPORT_RCOUT_SERIAL = 0,
             AP_CAN_SLCAN_ENABLED = 0,
-            HAL_PROXIMITY_ENABLED = 0,
-            AP_SCRIPTING_ENABLED = 0,
-            AP_AHRS_ENABLED = 0,
         )
 
 
@@ -1098,14 +1082,13 @@ class chibios(Board):
         ]
 
         # whitelist of compilers which we should build with -Werror
-        gcc_whitelist = frozenset([
+        gcc_whitelist = [
             ('4','9','3'),
             ('6','3','1'),
             ('9','2','1'),
             ('9','3','1'),
             ('10','2','1'),
-            ('11','3','0'),
-        ])
+        ]
 
         if cfg.env.HAL_CANFD_SUPPORTED:
             env.DEFINES.update(CANARD_ENABLE_CANFD=1)

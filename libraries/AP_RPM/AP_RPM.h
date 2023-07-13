@@ -116,7 +116,9 @@ private:
     AP_RPM_Backend *drivers[RPM_MAX_INSTANCES];
     uint8_t num_instances;
 
-    void Log_RPM() const;
+    void detect_instance(uint8_t instance);
+
+    void Log_RPM();
 };
 
 namespace AP {

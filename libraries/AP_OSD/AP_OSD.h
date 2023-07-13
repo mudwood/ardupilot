@@ -88,7 +88,7 @@ public:
 
 protected:
     bool check_option(uint32_t option);
-#if HAL_WITH_MSP_DISPLAYPORT
+#ifdef HAL_WITH_MSP_DISPLAYPORT
     virtual uint8_t get_txt_resolution() const {
         return 0;
     }
@@ -135,7 +135,7 @@ public:
     static const struct AP_Param::GroupInfo var_info[];
     static const struct AP_Param::GroupInfo var_info2[];
 
-#if HAL_WITH_MSP_DISPLAYPORT
+#ifdef HAL_WITH_MSP_DISPLAYPORT
     uint8_t get_txt_resolution() const override {
         return txt_resolution;
     }
@@ -234,7 +234,7 @@ private:
     AP_OSD_Setting batt_bar{true, 1, 1};
     AP_OSD_Setting arming{true, 1, 1};
 
-#if HAL_WITH_MSP_DISPLAYPORT
+#ifdef HAL_WITH_MSP_DISPLAYPORT
     // Per screen HD resolution options (currently supported only by DisplayPort)
     AP_Int8 txt_resolution;
     AP_Int8 font_index;

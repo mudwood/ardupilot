@@ -51,7 +51,8 @@ define HAL_PERIPH_ENABLE_BATTERY
 
 define CAN_APP_NODE_NAME "org.ardupilot.CubeBlack-periph"
 
-define AP_SCRIPTING_ENABLED 0
+
+env DISABLE_SCRIPTING 1
 
 # use blue LED
 define HAL_GPIO_PIN_LED HAL_GPIO_PIN_FMU_LED_AMBER

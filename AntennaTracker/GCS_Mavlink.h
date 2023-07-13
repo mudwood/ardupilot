@@ -9,8 +9,6 @@ public:
 
     using GCS_MAVLINK::GCS_MAVLINK;
 
-    uint8_t sysid_my_gcs() const override;
-
 protected:
 
     // telem_delay is not used by Tracker but is pure virtual, thus
@@ -18,6 +16,7 @@ protected:
     // as currently Tracker may brick XBees
     uint32_t telem_delay() const override { return 0; }
 
+    uint8_t sysid_my_gcs() const override;
 
     MAV_RESULT handle_command_component_arm_disarm(const mavlink_command_long_t &packet) override;
     MAV_RESULT _handle_command_preflight_calibration_baro(const mavlink_message_t &msg) override;

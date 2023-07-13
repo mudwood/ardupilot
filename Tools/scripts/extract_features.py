@@ -36,7 +36,6 @@ class ExtractFeatures(object):
         # the substitutions will be upper-cased
         self.features = [
             ('AP_ADVANCEDFAILSAFE_ENABLED', 'AP::advancedfailsafe',),
-            ('AP_BOOTLOADER_FLASHING_ENABLED', 'ChibiOS::Util::flash_bootloader',),
             ('AP_AIRSPEED_ENABLED', 'AP_Airspeed::AP_Airspeed',),
             ('AP_AIRSPEED_{type}_ENABLED', r'AP_Airspeed_(?P<type>.*)::init',),
 
@@ -153,8 +152,6 @@ class ExtractFeatures(object):
             ('HAL_SPRAYER_ENABLED', 'AC_Sprayer::AC_Sprayer',),
             ('AP_LANDINGGEAR_ENABLED', r'AP_LandingGear::init\b',),
             ('AP_WINCH_ENABLED', 'AP_Winch::AP_Winch',),
-            ('AP_RELAY_ENABLED', 'AP_Relay::init',),
-            ('AP_SERVORELAYEVENTS_ENABLED', 'AP_ServoRelayEvents::update_events',),
 
             ('AP_RCPROTOCOL_ENABLED', r'AP_RCProtocol::init\b',),
             ('AP_RCPROTOCOL_{type}_ENABLED', r'AP_RCProtocol_(?P<type>.*)::_process_byte\b',),
@@ -164,7 +161,6 @@ class ExtractFeatures(object):
             ('AP_DRONECAN_VOLZ_FEEDBACK_ENABLED', r'AP_DroneCAN::handle_actuator_status_Volz\b',),
             ('AP_ROBOTISSERVO_ENABLED', r'AP_RobotisServo::init\b',),
             ('AP_FETTEC_ONEWIRE_ENABLED', r'AP_FETtecOneWire::init\b',),
-            ('AP_SBUSOUTPUT_ENABLED', 'AP_SBusOut::sbus_format_frame',),
             ('AP_KDECAN_ENABLED', r'AP_KDECAN::update\b',),
 
             ('AP_RPM_ENABLED', 'AP_RPM::AP_RPM',),
@@ -184,7 +180,6 @@ class ExtractFeatures(object):
             ('EK3_FEATURE_DRAG_FUSION', r'NavEKF3_core::FuseDragForces'),
 
             ('AP_RC_CHANNEL_AUX_FUNCTION_STRINGS_ENABLED', r'RC_Channel::lookuptable',),
-            ('AP_SCRIPTING_ENABLED', r'AP_Scripting::init',),
 
             ('AP_NOTIFY_TONEALARM_ENABLED', r'AP_ToneAlarm::init'),
             ('AP_NOTIFY_MAVLINK_PLAY_TUNE_SUPPORT_ENABLED', r'AP_Notify::handle_play_tune'),
@@ -193,12 +188,6 @@ class ExtractFeatures(object):
             ('AP_NOTIFY_PROFILED_ENABLED', r'ProfiLED::init_ports'),
             ('AP_NOTIFY_PROFILED_SPI_ENABLED', r'ProfiLED_SPI::rgb_set_id'),
             ('AP_NOTIFY_NEOPIXEL_ENABLED', r'NeoPixel::init_ports'),
-            ('AP_FILESYSTEM_FORMAT_ENABLED', r'AP_Filesystem::format'),
-
-            ('AP_FILESYSTEM_{type}_ENABLED', r'AP_Filesystem_(?P<type>.*)::open'),
-
-            ('AP_INERTIALSENSOR_KILL_IMU_ENABLED', r'AP_InertialSensor::kill_imu'),
-            ('AP_CRASHDUMP_ENABLED', 'CrashCatcher_DumpMemory'),
         ]
 
     def progress(self, msg):

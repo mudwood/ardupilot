@@ -89,12 +89,6 @@ public:
     // send camera feedback message to GCS
     void send_feedback(mavlink_channel_t chan);
 
-    // send camera information message to GCS
-    void send_camera_information(mavlink_channel_t chan);
-
-    // send camera settings message to GCS
-    void send_camera_settings(mavlink_channel_t chan);
-
     // configure camera
     void configure(float shooting_mode, float shutter_speed, float aperture, float ISO, float exposure_type, float cmd_id, float engine_cutoff_time);
     void configure(uint8_t instance, float shooting_mode, float shutter_speed, float aperture, float ISO, float exposure_type, float cmd_id, float engine_cutoff_time);
@@ -126,8 +120,8 @@ public:
 
     // set focus specified as rate, percentage or auto
     // focus in = -1, focus hold = 0, focus out = 1
-    SetFocusResult set_focus(FocusType focus_type, float focus_value);
-    SetFocusResult set_focus(uint8_t instance, FocusType focus_type, float focus_value);
+    bool set_focus(FocusType focus_type, float focus_value);
+    bool set_focus(uint8_t instance, FocusType focus_type, float focus_value);
 
     // set tracking to none, point or rectangle (see TrackingType enum)
     // if POINT only p1 is used, if RECTANGLE then p1 is top-left, p2 is bottom-right

@@ -507,8 +507,6 @@ public:
     static AP_HAL::RCOutput::DshotEscType get_dshot_esc_type() { return AP_HAL::RCOutput::DshotEscType(_singleton->dshot_esc_type.get()); }
 
     static uint8_t get_dshot_rate() { return _singleton->dshot_rate.get(); }
-    
-    static uint8_t get_rc_fs_mask() { return _singleton->rc_fs_mask.get(); }
 
     static SRV_Channel *srv_channel(uint8_t i) {
 #if NUM_SERVO_CHANNELS > 0
@@ -603,11 +601,11 @@ private:
     static AP_Volz_Protocol *volz_ptr;
 #endif
 
-#if AP_SBUSOUTPUT_ENABLED
+#ifndef HAL_BUILD_AP_PERIPH
     // support for SBUS protocol
     AP_SBusOut sbus;
     static AP_SBusOut *sbus_ptr;
-#endif
+#endif // HAL_BUILD_AP_PERIPH
 
 #if AP_ROBOTISSERVO_ENABLED
     // support for Robotis servo protocol
@@ -657,7 +655,6 @@ private:
     AP_Int8 dshot_rate;
     AP_Int8 dshot_esc_type;
     AP_Int32 gpio_mask;
-    AP_Int32 rc_fs_mask;
 #if NUM_SERVO_CHANNELS >= 17
     AP_Int8 enable_32_channels;
 #endif

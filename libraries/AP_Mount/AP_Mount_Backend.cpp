@@ -14,12 +14,6 @@ void AP_Mount_Backend::init()
     _target_sysid = _params.sysid_default.get();
 }
 
-// set device id of this instance, for MNTx_DEVID parameter
-void AP_Mount_Backend::set_dev_id(uint32_t id)
-{
-    _params.dev_id.set_and_save(int32_t(id));
-}
-
 // return true if this mount accepts roll targets
 bool AP_Mount_Backend::has_roll_control() const
 {
@@ -36,18 +30,6 @@ bool AP_Mount_Backend::has_pitch_control() const
 // yaw_is_earth_frame (aka yaw_lock) should be true if yaw angle is earth-frame, false if body-frame
 void AP_Mount_Backend::set_angle_target(float roll_deg, float pitch_deg, float yaw_deg, bool yaw_is_earth_frame)
 {
-    // enforce angle limits
-    roll_deg = constrain_float(roll_deg, _params.roll_angle_min, _params.roll_angle_max);
-    pitch_deg = constrain_float(pitch_deg, _params.pitch_angle_min, _params.pitch_angle_max);
-    if (!yaw_is_earth_frame) {
-        // only limit yaw if in body-frame.  earth-frame yaw limiting is backend specific
-        // custom wrap code (instead of wrap_180) to better handle yaw of <= -180
-        if (yaw_deg > 180) {
-            yaw_deg -= 360;
-        }
-        yaw_deg = constrain_float(yaw_deg, _params.yaw_angle_min, _params.yaw_angle_max);
-    }
-
     // set angle targets
     mavt_target.target_type = MountTargetType::ANGLE;
     mavt_target.angle_rad.roll = radians(roll_deg);
@@ -195,7 +177,7 @@ void AP_Mount_Backend::send_gimbal_manager_status(mavlink_channel_t chan)
     uint32_t flags = GIMBAL_MANAGER_FLAGS_ROLL_LOCK | GIMBAL_MANAGER_FLAGS_PITCH_LOCK;
 
     if (_yaw_lock) {
-        flags |= GIMBAL_MANAGER_FLAGS_YAW_LOCK;
+        flags |= GIMBAL_MANAGER_FLAGS_PITCH_LOCK;
     }
 
     mavlink_msg_gimbal_manager_status_send(chan,

@@ -17,7 +17,6 @@
 #include "AP_EFI.h"
 #include "AP_EFI_State.h"
 #include <AP_HAL/Semaphores.h>
-#include <AP_Scripting/AP_Scripting_config.h>
 
 class AP_EFI; //forward declaration
 

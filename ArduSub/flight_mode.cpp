@@ -62,18 +62,6 @@ bool Sub::set_mode(control_mode_t mode, ModeReason reason)
         success = motordetect_init();
         break;
 
-    case HDHOLD:
-        success = hdhold_init();
-        break;
-
-    case AUTO_DIVE:
-        success = auto_dive_init();
-        break;
-
-    case SURVEY_MODE:
-        success = survey_init();
-        break;
-
     default:
         success = false;
         break;
@@ -169,19 +157,7 @@ void Sub::update_flight_mode()
     case MOTOR_DETECT:
         motordetect_run();
         break;
-        
-    case AUTO_DIVE:
-        auto_dive_run();
-        break;
-    
-    case HDHOLD:
-        hdhold_run();
-        break;
-    
-    case SURVEY_MODE:
-        survey_run();
-        break;
-        
+
     default:
         break;
     }

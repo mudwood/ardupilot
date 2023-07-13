@@ -6,12 +6,8 @@
 #include <AP_Generator/AP_Generator_config.h>
 #include <AP_Torqeedo/AP_Torqeedo_config.h>
 
-#ifndef AP_BATTERY_ENABLED
-#define AP_BATTERY_ENABLED 1
-#endif
-
 #ifndef AP_BATTERY_BACKEND_DEFAULT_ENABLED
-#define AP_BATTERY_BACKEND_DEFAULT_ENABLED AP_BATTERY_ENABLED
+#define AP_BATTERY_BACKEND_DEFAULT_ENABLED 1
 #endif
 
 #ifndef AP_BATTERY_ANALOG_ENABLED

@@ -30,6 +30,7 @@ public:
     void update(void) override;
 
 private:
+    uint8_t instance;
 };
 
 #endif

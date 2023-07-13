@@ -74,14 +74,10 @@ SECTIONS
     . = 0;
     _text = .;
 
-    /* Vector table: copied to RAM by startup script */
-    vectors : ALIGN(1024) SUBALIGN(16)
+    startup : ALIGN(16) SUBALIGN(16)
     {
-        __textvectors_base__ = LOADADDR(vectors);
-        __vectors_base__ = .;
         KEEP(*(.vectors))
-        __vectors_end__ = .;
-    } > dataram AT > default_flash
+    } > default_flash
 
     constructors : ALIGN(4) SUBALIGN(4)
     {

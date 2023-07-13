@@ -128,13 +128,6 @@ public:
     // handle a guided target request from GCS
     virtual bool handle_guided_request(Location target_loc) { return false; }
 
-    // true if is landing 
-    virtual bool is_landing() const { return false; }
-
-    // true if is taking 
-    virtual bool is_taking_off() const;
-
-
 protected:
 
     // subclasses override this to perform checks before entering the mode
@@ -216,8 +209,6 @@ public:
     
     bool mode_allows_autotuning() const override { return true; }
 
-    bool is_landing() const override;
-    
 protected:
 
     bool _enter() override;

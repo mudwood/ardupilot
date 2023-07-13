@@ -7,9 +7,6 @@
 
 #include <AP_HAL/AP_HAL.h>
 #include "AP_Relay.h"
-
-#if AP_RELAY_ENABLED
-
 #include <AP_Logger/AP_Logger.h>
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_SITL
@@ -198,5 +195,3 @@ AP_Relay *relay()
 }
 
 }
-
-#endif  // AP_RELAY_ENABLED

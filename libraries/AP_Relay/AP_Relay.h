@@ -9,10 +9,6 @@
 /// @brief	APM relay control class
 #pragma once
 
-#include "AP_Relay_config.h"
-
-#if AP_RELAY_ENABLED
-
 #include <AP_Param/AP_Param.h>
 
 #define AP_RELAY_NUM_RELAYS 6
@@ -68,5 +64,3 @@ private:
 namespace AP {
     AP_Relay *relay();
 };
-
-#endif  // AP_RELAY_ENABLED

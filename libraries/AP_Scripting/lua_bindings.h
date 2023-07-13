@@ -18,4 +18,3 @@ int lua_mavlink_init(lua_State *L);
 int lua_mavlink_receive_chan(lua_State *L);
 int lua_mavlink_register_rx_msgid(lua_State *L);
 int lua_mavlink_send_chan(lua_State *L);
-int lua_mavlink_block_command(lua_State *L);
