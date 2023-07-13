@@ -208,3 +208,26 @@
     MASK_LOG_CAMERA | \
     MASK_LOG_MOTBATT
 #endif
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////// 2023.7.1 add
+#ifndef DEFAULT_SET_HEADING
+ # define DEFAULT_SET_HEADING      4500     // default value for my new parameter
+#endif
+
+#ifndef DEFAULT_SURVEY_ANGLE
+ # define DEFAULT_SURVEY_ANGLE      4500     // default value for my new parameter
+#endif
+
+#ifndef DEFAULT_SURVEY_LENGTH
+ # define DEFAULT_SURVEY_LENGTH      1000     // default value for my new parameter
+#endif
+
+#ifndef DEFAULT_SURVEY_DESCENT
+ # define DEFAULT_SURVEY_DESCENT      -1.0     // default value for my new parameter
+#endif
+
+#ifndef DEFAULT_SURVEY_MAXDEPTH
+ # define DEFAULT_SURVEY_MAXDEPTH      -10.0     // default value for my new parameter
+#endif
+

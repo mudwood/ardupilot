@@ -209,7 +209,7 @@ public:
     uint32_t last_sample_ms;
 #endif
 
-#ifdef HAL_PERIPH_ENABLE_PRX
+#if HAL_PROXIMITY_ENABLED
     AP_Proximity proximity;
 #endif
 
@@ -328,6 +328,12 @@ public:
 
     static bool no_iface_finished_dna;
     static constexpr auto can_printf = ::can_printf;
+
+    static void canard_broadcast(uint64_t data_type_signature,
+                                 uint16_t data_type_id,
+                                 uint8_t priority,
+                                 const void* payload,
+                                 uint16_t payload_len);
 };
 
 namespace AP

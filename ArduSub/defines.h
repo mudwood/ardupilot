@@ -41,6 +41,9 @@ enum control_mode_t : uint8_t {
     POSHOLD =      16,  // automatic position hold with manual override, with automatic throttle
     MANUAL =       19,  // Pass-through input with no stabilization
     MOTOR_DETECT = 20,   // Automatically detect motors orientation
+    AUTO_DIVE =    30,  // Automatically diving start
+    HDHOLD =       31,  // Heading hold mode
+    SURVEY_MODE =  32,  // Structure survey mode
     CIRCLE8 =       100   // automatic circular flight with automatic throttle
 };
 
