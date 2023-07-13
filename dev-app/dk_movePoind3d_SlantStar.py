@@ -1,3 +1,8 @@
+#
+#   filename    :   dk_movePoint3d_SlantStar.py
+#   description :   ３次元のポイント移動
+#                   傾けた☆
+#
 from dronekit import connect, VehicleMode
 from pymavlink import mavutil
 import time
@@ -41,7 +46,7 @@ vehicle.armed = True
 vehicle.arm()
 print("ARMED.")
 
-### 離陸し、20mまで上昇
+### 離陸し、5mまで上昇
 try:
     vehicle.wait_for_armable()
     vehicle.wait_for_mode("GUIDED")
@@ -49,39 +54,42 @@ try:
 
     time.sleep(1)
 
-    vehicle.wait_simple_takeoff( 20, timeout=20)
-    print("takeoff. alt=20m")
+    vehicle.wait_simple_takeoff( 10, timeout=30 )
+    print("takeoff. alt=10m")
 
 except TimeoutError as takeoffError:
     print("Takeoff is timeout.")
 
 # 正五角形
-#        x(E)     y(N)
-# p1     1.0      0.0
-# p2     0.31     0.95
-# p3    -0.81     0.59
-# p4    -0.81    -0.59
-# p5     0.31    -0.95
+#        x(E)     y(N)      z(D)
+# p1     1.0      0.0       -1.0
+# p2     0.31     0.95      -1.0
+# p3    -0.81     0.59      -0.5
+# p4    -0.81    -0.59      -1.5
+# p5     0.31    -0.95      -0.5
 
-posN = [ 0.0, 0.59, -0.95, 0.95, -0.59, 0.0 ]   # y
-posE = [ 1.0, -0.81, 0.31, 0.31, -0.81, 1.0 ]   # x
-posD = -10.0        # 高度…正の値を入れると低くなる？？
+posN = [  0.00,  0.59, -0.95,  0.95, -0.59,  0.00 ]   # y
+posE = [  1.00, -0.81,  0.31,  0.31, -0.81,  1.00 ]   # x
+posD = [ -1.00, -1.00, -0.50, -1.50, -0.50, -1.00 ]   # z
+
 posMag = 10.0       # 倍率(m)
 
 TargetMargin = 0.2      # 移動完了判断のマージン
 MoveTimeout = 30        # 移動完了までのタイムアウト時間(s)
 
 print("start.")
-for posN, posE in zip( posN, posE ):
-    targetPosN = posN * posMag
-    targetPosE = posE * posMag
+for N, E, D in zip( posN, posE, posD ):
+    targetPosN = N * posMag
+    targetPosE = E * posMag
+    targetPosD = D * posMag
 
-    msg = BuildSetPositionMessage( targetPosN, targetPosE, posD )
+    msg = BuildSetPositionMessage( targetPosN, targetPosE, targetPosD )
     for x in range( 0, MoveTimeout ):
         currentPos  = vehicle.location.local_frame
         ArriveNorth = IsArrive( targetPosN, currentPos.north, TargetMargin )
         ArriveEast  = IsArrive( targetPosE, currentPos.east,  TargetMargin )
-        if ArriveNorth and ArriveEast:
+        ArriveDown  = IsArrive( targetPosD, currentPos.down,  TargetMargin )
+        if ArriveNorth and ArriveEast and ArriveDown:
             break
 
         vehicle.send_mavlink( msg )
