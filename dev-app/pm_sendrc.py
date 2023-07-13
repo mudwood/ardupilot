@@ -38,35 +38,24 @@ def set_rc_channel_pwm(channel_id, pwm=1500):
 
 # Set some roll
 print("sent roll")
-# set_rc_channel_pwm(2, 1600)
-# time.sleep( 5 )
-
-for x in range( 0, 5 ):
-    set_rc_channel_pwm( 1, 1800)
-    time.sleep( 1 )
-
-
+set_rc_channel_pwm(2, 1600)
+time.sleep( 5 )
 
 # Set some yaw
 print("set yaw")
-# set_rc_channel_pwm(4, 1600)
-# time.sleep( 5 )
+set_rc_channel_pwm(4, 1600)
+time.sleep( 5 )
 
-for x in range( 0, 5 ):
-    set_rc_channel_pwm( 4, 1800)
-    time.sleep( 1 )
+# The camera pwm value sets the servo speed of a sweep from the current angle to
+#  the min/max camera angle. It does not set the servo position.
+# Set camera tilt to 45º (max) with full speed
+print("set pwm")
+set_rc_channel_pwm(8, 1900)
+time.sleep( 10 )
 
-
-# # The camera pwm value sets the servo speed of a sweep from the current angle to
-# #  the min/max camera angle. It does not set the servo position.
-# # Set camera tilt to 45º (max) with full speed
-# print("set pwm")
-# set_rc_channel_pwm(8, 1900)
-# time.sleep( 10 )
-
-# # Set channel 12 to 1500us
-# # This can be used to control a device connected to a servo output by setting the
-# # SERVO[N]_Function to RCIN12 (Where N is one of the PWM outputs)
-# print("set pwm")
-# set_rc_channel_pwm(12, 1500)
-# time.sleep( 10 )
+# Set channel 12 to 1500us
+# This can be used to control a device connected to a servo output by setting the
+# SERVO[N]_Function to RCIN12 (Where N is one of the PWM outputs)
+print("set pwm")
+set_rc_channel_pwm(12, 1500)
+time.sleep( 10 )

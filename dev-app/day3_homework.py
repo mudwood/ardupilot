@@ -27,16 +27,28 @@ def IsArrive( Target, Now, Margin ):
 
 ##### body
 
-##### 接続
 vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True, timeout=60 )
 print("Connected.")
 
-##### GUIDEDモード
+# # ホームロケーション
+# # vehicle.home_location に値がセットされるまで download を繰り返す
+while not vehicle.home_location:
+    cmds = vehicle.commands
+    cmds.download()
+    cmds.wait_ready()
+
+    if not vehicle.home_location:
+        print("Waiting for home location ...")
+
+# ホームロケーションの取得完了
+print("Home location: %s" % vehicle.home_location )
+
+
+##### GUIDEDモードでARM
 vehicle.mode = VehicleMode("GUIDED")
 vehicle.wait_for_mode("GUIDED")
 print("mode = GUIDED")
 
-##### ARM
 vehicle.armed = True
 vehicle.arm()
 print("ARMED.")
@@ -63,10 +75,10 @@ except TimeoutError as takeoffError:
 # p4    -0.81    -0.59
 # p5     0.31    -0.95
 
-posN = [ 0.0, 0.59, -0.95, 0.95, -0.59, 0.0 ]   # y
-posE = [ 1.0, -0.81, 0.31, 0.31, -0.81, 1.0 ]   # x
-posD = -10.0        # 高度…正の値を入れると低くなる？？
-posMag = 10.0       # 倍率(m)
+posN = [ 0.0, 0.59, -0.95, 0.95, -0.59, 0.0 ]
+posE = [ 1.0, -0.81, 0.31, 0.31, -0.81, 1.0 ]
+posD = -10.0
+posMag = 10.0
 
 TargetMargin = 0.2      # 移動完了判断のマージン
 MoveTimeout = 30        # 移動完了までのタイムアウト時間(s)
