@@ -169,7 +169,7 @@ void Sub::update_flight_mode()
     case MOTOR_DETECT:
         motordetect_run();
         break;
-
+        
     case AUTO_DIVE:
         auto_dive_run();
         break;

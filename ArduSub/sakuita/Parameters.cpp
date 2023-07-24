@@ -203,7 +203,6 @@ const AP_Param::Info Sub::var_info[] = {
     // @User: Standard
     GSCALAR(log_bitmask,    "LOG_BITMASK",          DEFAULT_LOG_BITMASK),
 
-
     // @Param: SET_HEADING
     // @DisplayName: set heading
     // @Description: for mode 31
@@ -450,9 +449,11 @@ const AP_Param::Info Sub::var_info[] = {
     GOBJECT(camera, "CAM", AP_Camera),
 #endif
 
+#if AP_RELAY_ENABLED
     // @Group: RELAY_
     // @Path: ../libraries/AP_Relay/AP_Relay.cpp
     GOBJECT(relay,                  "RELAY_", AP_Relay),
+#endif
 
     // @Group: COMPASS_
     // @Path: ../libraries/AP_Compass/AP_Compass.cpp

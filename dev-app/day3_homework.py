@@ -27,7 +27,8 @@ def IsArrive( Target, Now, Margin ):
 
 ##### body
 
-vehicle = connect('tcp:127.0.0.1:5762', wait_ready=True, timeout=60 )
+#vehicle = connect('tcp:127.0.0.1:5780', wait_ready=True, timeout=60 )
+vehicle = connect('udp:127.0.0.1:14571', wait_ready=True, timeout=60 )
 print("Connected.")
 
 # # ホームロケーション
